@@ -305,6 +305,21 @@ footer a{color:var(--ind);text-decoration:none}
 .sec-note{font-size:11.5px;color:var(--mut);font-weight:500;text-transform:none;letter-spacing:0}
 .io-row{display:flex;gap:8px;margin:10px 0 0}
 .io-row .chipq{font-size:12px;padding:7px 12px}
+.snd-row{display:flex;align-items:center;gap:10px;margin:10px 0 2px;flex-wrap:wrap}
+.snd-lb{font-size:13px;color:var(--mut);min-width:120px}
+.snd-val{color:var(--txt);font-size:12px}
+.snd-sel{flex:1;min-width:180px;font-family:inherit;font-size:13px;font-weight:600;padding:8px 10px;border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--txt)}
+.snd-sel:focus{outline:none;border-color:var(--ind)}
+.snd-slider{flex:1;min-width:140px;accent-color:var(--ind);height:26px;cursor:pointer}
+.snd-tip{font-size:11.5px;color:var(--mut);margin-top:8px;line-height:1.55}
+.snd-tip b{color:var(--txt)}
+.set-overlay{position:fixed;inset:0;z-index:60;background:rgba(4,8,20,.62);backdrop-filter:blur(3px);display:flex;align-items:flex-start;justify-content:center;padding:48px 14px 20px;overflow-y:auto}
+body.light .set-overlay{background:rgba(90,100,130,.35)}
+.set-card{width:100%;max-width:460px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+.set-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+.set-head h2{font-size:18px;font-weight:800}
+.set-sec{font-size:13px;font-weight:800;color:var(--mut);margin:16px 0 4px;letter-spacing:.3px}
+.set-io{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .topic-grid{display:flex;flex-wrap:wrap;gap:8px}
 .chipq.on{border-color:var(--ind);background:rgba(99,102,241,.18);color:#fff}
 .tchip .ct{opacity:.65;font-size:11px;margin-left:4px}
@@ -423,6 +438,7 @@ body.light .kcell{background:rgba(255,255,255,.8)}
   <div class="spacer"></div>
   <button class="icon-btn" id="btnTheme" title="Đổi giao diện sáng / tối">🌙</button>
   <button class="icon-btn" id="btnSoundTop" title="Bật/tắt phát âm">🔊</button>
+  <button class="icon-btn" id="btnSettings" title="Cài đặt">⚙️</button>
   <button class="icon-btn" id="btnHome" title="Về màn hình chính">⌂</button>
 </header>
 
@@ -436,12 +452,6 @@ body.light .kcell{background:rgba(255,255,255,.8)}
       <div class="dash-item"><div class="dv" id="dMastered">0</div><div class="dt">Từ đã vững 🌸</div></div>
       <div class="heat" id="heatMap" title="Bản đồ hoạt động 5 tuần gần nhất"></div>
     </div>
-    <div class="io-row">
-      <button class="chipq" id="btnExport" title="Tải tiến độ học ra file JSON">💾 Xuất tiến độ</button>
-      <button class="chipq" id="btnImport" title="Nhập tiến độ từ file JSON">📥 Nhập tiến độ</button>
-      <input type="file" id="fileImport" accept="application/json,.json" class="hidden">
-    </div>
-
     <h2 class="sec" style="margin-top:14px">🎮 Kiểu luyện tập</h2>
     <div class="act-grid" id="actGrid">
       <button class="act on" data-a="quiz"><div class="e">🎯</div><div class="t">Kiểm tra</div><div class="d">Trắc nghiệm hoặc tự luận theo nhiều chế độ</div></button>
@@ -1015,6 +1025,48 @@ body.light .kcell{background:rgba(255,255,255,.8)}
   </section>
 </div>
 
+<!-- ============ SETTINGS MODAL ============ -->
+<div id="setModal" class="set-overlay hidden">
+  <div class="card set-card" role="dialog" aria-modal="true" aria-label="Cài đặt">
+    <div class="set-head">
+      <h2>⚙️ Cài đặt</h2>
+      <button class="icon-btn" id="btnSetClose" title="Đóng">✕</button>
+    </div>
+
+    <h3 class="set-sec">🔊 Âm thanh</h3>
+    <div id="sndWrap">
+      <div class="snd-row">
+        <span class="snd-lb">Giọng đọc</span>
+        <select id="sndVoice" class="snd-sel"><option value="auto">✨ Tự động (giọng tốt nhất)</option></select>
+        <button class="chipq" id="sndTry" title="Nghe thử">🔈 Thử</button>
+      </div>
+      <div class="snd-row">
+        <span class="snd-lb">Tốc độ <b id="sndRateV" class="snd-val">0.92×</b></span>
+        <input type="range" id="sndRate" class="snd-slider" min="0.6" max="1.4" step="0.02">
+      </div>
+      <div class="snd-row">
+        <span class="snd-lb">Âm lượng <b id="sndVolV" class="snd-val">100%</b></span>
+        <input type="range" id="sndVol" class="snd-slider" min="0.2" max="1" step="0.05">
+      </div>
+      <div class="snd-tip">💡 Âm lượng app phụ thuộc <b>âm lượng media của máy</b> — nếu vẫn nhỏ, hãy tăng volume máy lên (không phải volume chuông). Giọng ☁️ đọc qua mạng, giọng không có ☁️ chạy offline.</div>
+    </div>
+
+    <h3 class="set-sec">🌗 Giao diện</h3>
+    <div class="set-io">
+      <button class="chipq" id="btnSetTheme">🌙 Đổi sáng / tối</button>
+      <button class="chipq" id="btnSetSound">🔊 Bật / tắt phát âm</button>
+    </div>
+
+    <h3 class="set-sec">💾 Dữ liệu & tiến độ</h3>
+    <div class="set-io">
+      <button class="chipq" id="btnExport" title="Tải tiến độ học ra file JSON">💾 Xuất tiến độ</button>
+      <button class="chipq" id="btnImport" title="Nhập tiến độ từ file JSON">📥 Nhập tiến độ</button>
+      <input type="file" id="fileImport" accept="application/json,.json" class="hidden">
+    </div>
+    <div class="snd-tip" style="margin-top:0">Xuất file JSON để sao lưu / chuyển máy; nhập lại để khôi phục toàn bộ tiến độ (từ vựng, kanji, kana, streak, kỷ lục đấu trường…).</div>
+  </div>
+</div>
+
 <footer>
   Dữ liệu từ vựng theo giáo trình 「みんなの日本語 初級 I & II」bản tiếng Việt (50 bài, ~2100 từ).<br>
   Biên soạn tham khảo: kosei.vn · riki.edu.vn · ngocsensei.com — Ứng dụng chạy hoàn toàn offline trong trình duyệt.<br>
@@ -1158,15 +1210,163 @@ function renderJPWithCtx(raw, spanClass){
   return esc(raw).replace(/([（(［\[][^)）］\]]*[)）］\]]|「[^」]*」|『[^』]*』)/g, m => `<span class="${spanClass}">${m}</span>`);
 }
 const escH = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-function speakJP(text){
-  if(!settings.sound || !('speechSynthesis' in window)) return;
-  try{
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(stripJPBrackets(text).replace(/[～…]/g,''));
-    u.lang = 'ja-JP'; u.rate = 0.92;
-    speechSynthesis.speak(u);
-  }catch(e){}
-}
+/* ================= 🔊 TTS engine — giọng đọc to, rõ, mượt =================
+   Sửa 3 bệnh kinh điển của speechSynthesis trên điện thoại / Chrome:
+   1) cancel() rồi speak() ngay lập tức → câu đầu bị nuốt (giật)   ⇒ nghỉ 70ms
+   2) đọc câu dài hay đứng giữa chừng (bug ~15s của Chrome)        ⇒ resume() định kỳ
+   3) giọng mặc định nhỏ / không rõ                                ⇒ tự chọn giọng tốt nhất,
+      câu dài tự cắt khúc theo dấu câu, chỉnh được giọng/tốc độ/âm lượng */
+const TTS = (() => {
+  const okTTS = () => ('speechSynthesis' in window) && ('SpeechSynthesisUtterance' in window);
+  const VOICE_PREF = [
+    /google 日本語/i,                                   // Android / ChromeOS — thường to & rõ nhất
+    /microsoft (nanami|ayumi|haruka|ichiro|keita)/i,   // Windows
+    /kyoko|otoya|hattori/i,                            // iOS / macOS
+    /japan|日本/i                                      // tên chung chung
+  ];
+  let voices = [], picked = null;
+  let gen = 0;                 // mỗi lần speak/stop tăng 1 → vô hiệu mọi callback cũ
+  let chunks = [], ci = 0;     // hàng đợi các đoạn đang đọc
+  let pendingTimer = 0, keepAlive = 0, warmed = false;
+
+  function load(){
+    if(!okTTS()) return;
+    let vs = [];
+    try{ vs = speechSynthesis.getVoices() || []; }catch(e){ return; }
+    if(!vs.length) return;                       // chưa nạp xong — giữ danh sách cũ
+    const ja = vs.filter(v => /^ja([-_]|$)/i.test(v.lang || ''));
+    voices = ja.length ? ja : vs.filter(v => /japan|日本/i.test(v.name || ''));
+    pick();
+    fillSel();
+  }
+  function scoreOf(v){
+    let s = 0;
+    VOICE_PREF.forEach((re, i) => { if(re.test(v.name || '')) s += (VOICE_PREF.length - i) * 10; });
+    if(/^ja[-_]JP/i.test(v.lang || '')) s += 3;
+    if(v.default) s += 2;
+    return s;
+  }
+  function pick(){
+    if(!voices.length){ picked = null; return; }
+    const want = settings.ttsVoice;
+    picked = (want && want !== 'auto') ? (voices.find(v => (v.voiceURI || v.name) === want) || null) : null;
+    if(!picked) picked = [...voices].sort((a, b) => scoreOf(b) - scoreOf(a))[0];
+  }
+  function fillSel(){
+    const sel = byId('sndVoice'); if(!sel) return;
+    sel.innerHTML = '<option value="auto">✨ Tự động (giọng tốt nhất)</option>' +
+      voices.map(v => `<option value="${escH(v.voiceURI || v.name)}">${escH(v.name)}${v.localService ? '' : ' ☁️'}</option>`).join('');
+    const cur = settings.ttsVoice || 'auto';
+    sel.value = (cur !== 'auto' && voices.some(v => (v.voiceURI || v.name) === cur)) ? cur : 'auto';
+  }
+  function clean(text){
+    return stripJPBrackets(String(text == null ? '' : text))
+      .replace(/[〜～]/g, '').replace(/…+/g, '。')   // …… → ngắt câu cho tự nhiên
+      .replace(/。{2,}/g, '。').replace(/^[。\s]+|[。\s]+$/g, '') .trim();
+  }
+  function splitChunks(t){
+    const MAX = 120;
+    const sents = (String(t).match(/[^。？！；!?]+[。？！；!?]*/g) || [])
+      .map(s => s.trim()).filter(Boolean);
+    const out = [];
+    for(let s of (sents.length ? sents : [String(t)])){
+      while(s.length > MAX){
+        let cut = s.lastIndexOf('、', MAX);
+        if(cut < 20) cut = -1;
+        if(cut < 0){ out.push(s.slice(0, MAX)); s = s.slice(MAX); }
+        else { out.push(s.slice(0, cut + 1)); s = s.slice(cut + 1); }
+      }
+      if(s) out.push(s);
+    }
+    return out.length ? out : [String(t)];
+  }
+  function startKeepAlive(){
+    stopKeepAlive();
+    // Chrome desktop hay tự ngắt sau ~15s đọc liên tục — resume() nhịp 7s giữ giọng chạy mượt
+    keepAlive = setInterval(() => {
+      try{ if(speechSynthesis.speaking && !speechSynthesis.paused) speechSynthesis.resume(); }catch(e){}
+    }, 7000);
+  }
+  function stopKeepAlive(){ if(keepAlive){ clearInterval(keepAlive); keepAlive = 0; } }
+  function stop(){
+    gen++;
+    chunks = []; ci = 0;
+    if(pendingTimer){ clearTimeout(pendingTimer); pendingTimer = 0; }
+    stopKeepAlive();
+    try{ if(okTTS()) speechSynthesis.cancel(); }catch(e){}
+  }
+  function sayNext(g, opts){
+    if(g !== gen) return;
+    if(ci >= chunks.length){ chunks = []; ci = 0; stopKeepAlive(); if(opts.onend) opts.onend(); return; }
+    const txt = chunks[ci++];
+    let u;
+    try{ u = new SpeechSynthesisUtterance(txt); }catch(e){ stopKeepAlive(); chunks = []; ci = 0; return; }
+    u.lang = 'ja-JP';
+    if(picked) u.voice = picked;
+    u.volume = Math.max(0, Math.min(1, settings.ttsVol == null ? 1 : +settings.ttsVol));
+    u.rate   = Math.max(0.5, Math.min(1.8, (+settings.ttsRate || 1) * (opts.factor || 1)));
+    u.pitch  = 1;
+    u.onend  = () => sayNext(g, opts);    // hết đoạn → sang đoạn kế
+    u.onerror = () => sayNext(g, opts);   // lỗi 1 đoạn vẫn chạy tiếp cho mượt
+    startKeepAlive();
+    try{ speechSynthesis.speak(u); }catch(e){ sayNext(g, opts); }
+  }
+  function speak(text, opts){
+    if(!okTTS() || !settings.sound) return false;
+    opts = opts || {};
+    const t = clean(text);
+    if(!t) return false;
+    const parts = splitChunks(t);
+    stop();                               // hủy câu đang đọc + vô hiệu callback cũ (stop đã tăng gen)
+    const g = gen;
+    // nghỉ 70ms sau cancel — nếu speak ngay, Android/Chrome hay nuốt mất câu đầu (cảm giác "giật")
+    pendingTimer = setTimeout(() => {
+      pendingTimer = 0;
+      if(g !== gen) return;
+      chunks = parts; ci = 0;
+      sayNext(g, opts);
+    }, 70);
+    return true;
+  }
+  function warm(){
+    if(warmed || !okTTS()) return;
+    warmed = true;
+    load();
+    try{
+      const u = new SpeechSynthesisUtterance(' ');  // câu trắng volume 0 — mở khoá engine trên mobile
+      u.volume = 0; u.rate = 2; u.lang = 'ja-JP';
+      speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  function init(){
+    if(!okTTS()){
+      const w = byId('sndWrap');
+      if(w) w.innerHTML = '<h2 class="sec">🔊 Âm thanh</h2><div class="snd-tip">⚠️ Trình duyệt này không hỗ trợ đọc giọng nói (Web Speech API). Bạn thử Chrome / Edge / Safari bản mới nhé.</div>';
+      return;
+    }
+    load();
+    try{
+      if(typeof speechSynthesis.addEventListener === 'function') speechSynthesis.addEventListener('voiceschanged', load);
+      else speechSynthesis.onvoiceschanged = load;
+    }catch(e){}
+    setTimeout(load, 400); setTimeout(load, 1200); setTimeout(load, 3000);  // vài máy nạp giọng chậm
+    document.addEventListener('pointerdown', warm, { once:true });          // lần chạm đầu tiên = mở khoá âm thanh mobile
+    syncUI();
+  }
+  function syncUI(){
+    fillSel();
+    const r = byId('sndRate'), o = byId('sndVol');
+    if(r) r.value = settings.ttsRate == null ? 1 : settings.ttsRate;
+    if(o) o.value = settings.ttsVol == null ? 1 : settings.ttsVol;
+    const rv = byId('sndRateV'), ov = byId('sndVolV');
+    if(rv) rv.textContent = ((+settings.ttsRate) || 1).toFixed(2).replace(/0$/, '') + '×';
+    if(ov) ov.textContent = Math.round((settings.ttsVol == null ? 1 : settings.ttsVol) * 100) + '%';
+  }
+  return { speak, stop, warm, init, syncUI, pick, load, ok: okTTS, splitChunks, clean,
+           get voice(){ return picked; }, get voices(){ return voices; },
+           get speaking(){ return pendingTimer !== 0 || ci < chunks.length; } };
+})();
+function speakJP(text){ TTS.speak(text); }
 
 /* utils */
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
@@ -1195,7 +1395,7 @@ function weightedSample(items, n){
 /* ================= Settings & SRS-lite stats ================= */
 let settings = loadSettings();
 function loadSettings(){
-  const def = { activity:'quiz', dir:'jp2vn', input:'mc', count:20, pairs:6, pick:'rand', timed:false, bookOrder:false, kjMode:'study', kjDir:'kj2mean', grMode:'study', lessons:[1], sound:true, topics:[], fsrs:false, dictMode:'word', theme:'dark', jlpt:'all', knView:'table', knMode:'k2r', knSet:'basic', pos:[], vbMode:'guess' };
+  const def = { activity:'quiz', dir:'jp2vn', input:'mc', count:20, pairs:6, pick:'rand', timed:false, bookOrder:false, kjMode:'study', kjDir:'kj2mean', grMode:'study', lessons:[1], sound:true, topics:[], fsrs:false, dictMode:'word', theme:'dark', jlpt:'all', knView:'table', knMode:'k2r', knSet:'basic', pos:[], vbMode:'guess', ttsVoice:'auto', ttsRate:0.92, ttsVol:1 };
   try{
     const s = JSON.parse(localStorage.getItem('minnaQuiz')||'{}');
     return { ...def, ...s,
@@ -1209,7 +1409,8 @@ function saveSettings(){
     activity:settings.activity, dir:settings.dir, input:settings.input, count:settings.count,
     pairs:settings.pairs, pick:settings.pick, timed:settings.timed, bookOrder:settings.bookOrder,
     kjMode:settings.kjMode, kjDir:settings.kjDir, grMode:settings.grMode, topics:[...settings.topics], fsrs:!!settings.fsrs, dictMode:settings.dictMode, theme:settings.theme, jlpt:settings.jlpt, knView:settings.knView, knMode:settings.knMode, knSet:settings.knSet, pos:[...settings.pos], vbMode:settings.vbMode,
-    lessons:[...settings.lessons], sound:settings.sound
+    lessons:[...settings.lessons], sound:settings.sound,
+    ttsVoice:settings.ttsVoice||'auto', ttsRate:+settings.ttsRate||0.92, ttsVol:(settings.ttsVol==null?1:+settings.ttsVol)
   }));
 }
 
@@ -1519,6 +1720,11 @@ function initSetup(){
   byId('tglFsrs').onclick = ()=>{ settings.fsrs = !settings.fsrs; refreshSetup(); saveSettings(); };
   byId('btnTheme').onclick = ()=>{ settings.theme = settings.theme==='light' ? 'dark' : 'light'; applyTheme(); saveSettings(); };
   applyTheme();
+  // 🔊 panel âm thanh
+  byId('sndVoice').onchange = ()=>{ settings.ttsVoice = byId('sndVoice').value; TTS.pick(); saveSettings(); };
+  byId('sndRate').oninput = ()=>{ settings.ttsRate = +byId('sndRate').value; byId('sndRateV').textContent = settings.ttsRate.toFixed(2) + '×'; saveSettings(); };
+  byId('sndVol').oninput = ()=>{ settings.ttsVol = +byId('sndVol').value; byId('sndVolV').textContent = Math.round(settings.ttsVol*100) + '%'; saveSettings(); };
+  byId('sndTry').onclick = ()=> TTS.speak('こんにちは。元気ですか。', { factor:1 });
   byId('btnStart').onclick = startActivity;
   refreshSetup();
 }
@@ -2408,15 +2614,7 @@ function matchSpoken(transcript, w){
   }
   return false;
 }
-function speakJPv(text, rate){
-  if(!settings.sound || !('speechSynthesis' in window)) return;
-  try{
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(stripJPBrackets(text).replace(/[〜～…]/g,''));
-    u.lang = 'ja-JP'; u.rate = rate || 0.92;
-    speechSynthesis.speak(u);
-  }catch(e){}
-}
+function speakJPv(text, rate){ TTS.speak(text, { factor:(rate || 0.92) / 0.92 }); }
 
 /* ================= 🎤 Luyện nói ================= */
 let spk = null, spRec = null;
@@ -2817,7 +3015,7 @@ function cvNav(di){
 function stopCvPlay(){
   if(cv) cv.play = 0;
   const b = byId('cvPlayAll'); if(b) b.textContent = '▶ Nghe hết';
-  try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
+  TTS.stop();
   const box = byId('cvLines');
   if(box) box.querySelectorAll('.cv-line').forEach(r => r.classList.remove('hl'));
 }
@@ -2827,26 +3025,19 @@ function cvPlayAll(){
   const d = cv.ds[cv.i];
   cv.play = 1;
   byId('cvPlayAll').textContent = '⏸ Dừng';
-  const rows = byId('cvLines').querySelectorAll('.cv-line');
+    const rows = byId('cvLines').querySelectorAll('.cv-line');
   let i = 0;
-  const ttsOk = settings.sound && ('speechSynthesis' in window);
   const step = () => {
     if(!cv || !cv.play) return;
     if(i >= d.lines.length){ stopCvPlay(); return; }
     rows.forEach((r, j) => { r.classList.toggle('hl', j === i); if(j === i) r.scrollIntoView({block: 'nearest'}); });
     const txt = stripJPBrackets(d.lines[i].jp).replace(/[〜～…]/g, '');
     i++;
-    if(!ttsOk){ setTimeout(step, 900); return; }
-    try{
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(txt);
-      u.lang = 'ja-JP'; u.rate = 0.92;
-      let advanced = false;
-      const go = () => { if(!advanced){ advanced = true; setTimeout(step, 300); } };
-      u.onend = go; u.onerror = go;
-      speechSynthesis.speak(u);
-      setTimeout(go, Math.max(2500, txt.length * 400)); // an toàn nếu thiếu onend
-    }catch(e){ setTimeout(step, 600); }
+    let advanced = false;
+    const go = () => { if(!advanced){ advanced = true; setTimeout(step, 300); } };
+    const ok = TTS.speak(txt, { onend: go, factor: 1 });
+    if(!ok){ setTimeout(step, 900); return; }
+    setTimeout(go, Math.max(3000, txt.length * 450)); // an toàn nếu thiếu onend
   };
   step();
 }
@@ -3572,7 +3763,16 @@ byId('btnRetryWrong').onclick = ()=>{
 };
 byId('btnHome').onclick = ()=>{ stopAllTimers(); if(matchTimer){clearInterval(matchTimer);matchTimer=null;} show('screenSetup'); refreshSetup(); };
 function updSoundIcon(){ byId('btnSoundTop').textContent = settings.sound ? '🔊' : '🔇'; }
-byId('btnSoundTop').onclick = ()=>{ settings.sound = !settings.sound; if(!settings.sound && 'speechSynthesis' in window) speechSynthesis.cancel(); saveSettings(); updSoundIcon(); };
+byId('btnSoundTop').onclick = ()=>{ settings.sound = !settings.sound; if(!settings.sound) TTS.stop(); saveSettings(); updSoundIcon(); };
+/* ---- ⚙️ Settings modal ---- */
+function openSettings(){ byId('setModal').classList.remove('hidden'); }
+function closeSettings(){ byId('setModal').classList.add('hidden'); }
+byId('btnSettings').onclick = openSettings;
+byId('btnSetClose').onclick = closeSettings;
+byId('setModal').onclick = e => { if(e.target === byId('setModal')) closeSettings(); };
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && !byId('setModal').classList.contains('hidden')) closeSettings(); });
+byId('btnSetTheme').onclick = () => byId('btnTheme').click();
+byId('btnSetSound').onclick = () => byId('btnSoundTop').click();
 byId('btnListBack').onclick = ()=>{ show('screenSetup'); refreshSetup(); };
 byId('btnPosGroup').onclick = ()=>{ listGroupPos = !listGroupPos; showList(listLesson); };
 byId('btnVerbBoard').onclick = openVerbBoard;
@@ -3646,7 +3846,7 @@ byId('knSkip').onclick = () => { if(kn && !kn.awaiting){ byId('knInput').value='
 byId('knNext').onclick = knNext;
 
 // expose for debugging / power users
-window.__minna = { get game(){ return game; }, get flash(){ return flash; }, get match(){ return match; }, get kj(){ return kj; }, get gr(){ return gr; }, get spk(){ return spk; }, get dict(){ return dict; }, get cv(){ return cv; }, get kst(){ return kst; }, get fdb(){ return fdb; }, get kn(){ return kn; }, get kanaStats(){ return kanaStats; }, settings, matchVN, matchJP, matchKana, wordsForLessons, kanjiForLessons, buildDeck, sentencesForSelection, matchSentences, dayStreak, selWords, topicOf, findParticleSpots, exportDataObj, mergeProgress, arenaBest, fReview, fOrder, fDueIn, matchSpoken, levDist, normSpeak, SRCtor, jlptOfWord, jlptOfKj, jlptCoverage, kataOf, applyTheme, posOf, POS_DEFS, vbRuleText, vbPool, vbDictOf, openVerbBoard, get vb(){ return vb; }, vbNext, vbAnswer, vbMasuOf, vbMasuOptions, vbAnswerMasu };
+window.__minna = { get game(){ return game; }, get flash(){ return flash; }, get match(){ return match; }, get kj(){ return kj; }, get gr(){ return gr; }, get spk(){ return spk; }, get dict(){ return dict; }, get cv(){ return cv; }, get kst(){ return kst; }, get fdb(){ return fdb; }, get kn(){ return kn; }, get kanaStats(){ return kanaStats; }, settings, matchVN, matchJP, matchKana, wordsForLessons, kanjiForLessons, buildDeck, sentencesForSelection, matchSentences, dayStreak, selWords, topicOf, findParticleSpots, exportDataObj, mergeProgress, arenaBest, fReview, fOrder, fDueIn, matchSpoken, levDist, normSpeak, SRCtor, jlptOfWord, jlptOfKj, jlptCoverage, kataOf, applyTheme, posOf, POS_DEFS, vbRuleText, vbPool, vbDictOf, openVerbBoard, get vb(){ return vb; }, vbNext, vbAnswer, vbMasuOf, vbMasuOptions, vbAnswerMasu, TTS, speakJP };
 /* ---------- PWA: cài lên điện thoại & chạy offline ---------- */
 let deferredPrompt = null;
 function updInstallUI(){
@@ -3668,6 +3868,7 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
 }
 initSetup();
+TTS.init();
 </script>
 </body>
 </html>
